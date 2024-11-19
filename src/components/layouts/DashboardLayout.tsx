@@ -1,22 +1,44 @@
-// DashboardLayout.tsx
-import React, { ReactNode } from 'react';
+import { useState } from 'react';
+import Navbar from '../ui/Navbar/Navbar';
+import Sidebar from '../../pages/Dashboard/Sidebar';
 
-type DashboardLayoutProps = {
-  children: ReactNode;
-};
+const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
   return (
-    <div>
-      <header className="bg-gray-800 text-white p-4">Dashboard Layout Header</header>
-      <div className="flex">
-        <nav className="bg-gray-200 max-w-[450px] h-screen p-4 text-xl font-medium">Dashboard Sidebar</nav>
-        <main className="bg-gray-100 flex-1 p-4">{children}</main>
+    <>
+      {/* Toggle button for mobile screens */}
+      <button
+        onClick={toggleSidebar}
+        className="md:hidden fixed top-4 left-4 bg-yellow-500 hover:bg-yellow-400 text-white p-2 rounded-lg text-gray-900 hover:text-gray-700 focus:outline-none z-50 transition-all duration-300"
+      >
+        {isSidebarOpen ? '✖' : '☰'}
+      </button>
+
+      {/* Navbar */}
+      <Navbar />
+
+      <div className="flex min-h-screen">
+        {/* Sidebar */}
+        <Sidebar
+          userRole="admin"
+          isOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
+
+        {/* Main content */}
+        <div
+          className={`flex-1 p-4 sm:p-6 md:p-8 transition-all duration-300 ${
+            isSidebarOpen ? 'ml-64' : 'ml-0'
+          }`}
+        >
+          <main>{children}</main>
+        </div>
       </div>
-      <footer className="bg-gray-800 text-white p-4">Dashboard Layout Footer</footer>
-    </div>
+    </>
   );
 };
 
 export default DashboardLayout;
-
